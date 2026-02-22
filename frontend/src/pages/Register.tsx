@@ -44,8 +44,8 @@ export default function Register() {
       setAuth(res.data.user, res.data.access_token)
       navigate('/survey?type=baseline')
     } catch (err: unknown) {
-      const axiosError = err as { response?: { data?: { detail?: string } } }
-      setError(axiosError.response?.data?.detail || tr.common.error)
+      const axiosError = err as { response?: { data?: { detail?: string } }; friendlyMessage?: string }
+      setError(axiosError.response?.data?.detail || axiosError.friendlyMessage || tr.common.error)
     } finally {
       setLoading(false)
     }
