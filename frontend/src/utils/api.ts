@@ -10,7 +10,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL
 
 const api = axios.create({
   baseURL: API_BASE,
-  timeout: 10000,
+  timeout: 60000,
 })
 
 api.interceptors.request.use((config) => {
@@ -27,6 +27,13 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       useAuthStore.getState().logout()
       window.location.href = '/login'
+    }
+    // ネットワーク到達不能 or タイムアウト時に分かりやすいエラーを付与
+    if (!error.response) {
+      const isTimeout = error.code === 'ECONNABORTED'
+      error.friendlyMessage = isTimeout
+        ? 'サーバーの起動中です。少し待ってから再度お試しください（初回は30秒ほどかかる場合があります）'
+        : 'サーバーに接続できません。バックエンドのURLが正しく設定されているか確認してください'
     }
     return Promise.reject(error)
   }
