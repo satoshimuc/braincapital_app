@@ -1,8 +1,15 @@
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore'
 
+// 本番: VITE_API_BASE_URL 環境変数を Vercel の Environment Variables に設定
+// 例: https://your-backend.onrender.com
+// 開発: Vite の proxy が /api を localhost:8000 に転送するのでそのまま使用
+const API_BASE = import.meta.env.VITE_API_BASE_URL
+  ? `${import.meta.env.VITE_API_BASE_URL}/api`
+  : '/api'
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE,
   timeout: 10000,
 })
 
